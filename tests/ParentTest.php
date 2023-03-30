@@ -6,6 +6,7 @@ use App\Entities\ManualMessage;
 use App\Entities\ParentGuardian;
 use App\Entities\Student;
 use App\Entities\Teacher;
+use App\Exceptions\InvalidReceiverException;
 use App\Exceptions\InvalidSenderException;
 use PHPUnit\Framework\TestCase;
 
@@ -13,7 +14,7 @@ class ParentTest extends TestCase
 {
     public function testParentCannotSendMessageToStudent(): void
     {
-        $this->expectException(InvalidSenderException::class);
+        $this->expectException(InvalidReceiverException::class);
 
         $message = new ManualMessage('new message');
         $message->setSender(new ParentGuardian());
@@ -23,7 +24,7 @@ class ParentTest extends TestCase
 
     public function testParentCannotSendMessageToParent(): void
     {
-        $this->expectException(InvalidSenderException::class);
+        $this->expectException(InvalidReceiverException::class);
 
         $message = new ManualMessage('new message');
         $message->setSender(new ParentGuardian());

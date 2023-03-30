@@ -73,7 +73,7 @@ abstract class Message extends Model
         }
 
         if (!in_array($this->messageType, $this->receiver->allowedReceiveMessageTypes())) {
-            throw new InvalidReceiverException('Cannot send this kind of message!');
+            throw new InvalidMessageException('Cannot send this kind of message!');
         }
 
         return true;
