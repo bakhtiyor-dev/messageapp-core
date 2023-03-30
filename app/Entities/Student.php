@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Entities;
 
+use App\Contracts\Receivable;
 use App\Contracts\Sendable;
 use App\Enums\MessageType;
 
-class Student extends User implements Sendable
+class Student extends User implements Sendable, Receivable
 {
     public function getFullName(): string
     {
@@ -17,8 +18,13 @@ class Student extends User implements Sendable
         return [Teacher::class];
     }
 
-    public function allowedMessageTypes(): array
+    public function allowedSendMessageTypes(): array
     {
         return [MessageType::MANUAL];
+    }
+
+    public function allowedReceiveMessageTypes(): array
+    {
+        return [MessageType::MANUAL, MessageType::SYSTEM];
     }
 }

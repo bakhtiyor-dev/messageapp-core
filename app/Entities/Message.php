@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Entities;
 
+use App\Contracts\Receivable;
 use App\Contracts\Sendable;
 use App\Enums\MessageType;
 use App\Exceptions\InvalidMessageException;
+use App\Exceptions\InvalidReceiverException;
 use App\Exceptions\InvalidSenderException;
 use Core\Model;
 
@@ -12,7 +14,7 @@ abstract class Message extends Model
 {
     protected Sendable $sender;
 
-    protected User $receiver;
+    protected Receivable $receiver;
 
     protected string $message;
 
@@ -20,9 +22,24 @@ abstract class Message extends Model
 
     protected MessageType $messageType;
 
-    public function setMessage(string $message): void
+    public function setSender(Sendable $sender): void
     {
-        $this->message = $message;
+        $this->sender = $sender;
+    }
+
+    public function setReceiver(Receivable $receiver): void
+    {
+        $this->receiver = $receiver;
+    }
+
+    public function getSenderFullName(): string
+    {
+        return $this->sender->getFullName();
+    }
+
+    public function getReceiverFullName(): string
+    {
+        return $this->receiver->getFullName();
     }
 
     public function getMessage(): string
@@ -30,30 +47,35 @@ abstract class Message extends Model
         return $this->message;
     }
 
-    public function save()
+    public function getMessageType(): MessageType
+    {
+        return $this->messageType;
+    }
+
+    public function getCreationTime(): string
+    {
+        return gmdate("Y-m-d\TH:i:s\Z", $this->creationTime);
+    }
+
+    /**
+     * @throws InvalidMessageException
+     * @throws InvalidSenderException
+     * @throws InvalidReceiverException
+     */
+    public function save(): bool
     {
         if (!in_array(get_class($this->receiver), $this->sender->allowedReceiverTypes())) {
-            throw new InvalidSenderException('Cannot send for this type of user!');
+            throw new InvalidReceiverException('Cannot send for this type of user!');
         }
 
-        if (!in_array($this->messageType, $this->sender->allowedMessageTypes())) {
+        if (!in_array($this->messageType, $this->sender->allowedSendMessageTypes())) {
             throw new InvalidMessageException('Cannot send this kind of message!');
         }
-    }
 
-    /**
-     * @param Sendable $sender
-     */
-    public function setSender(Sendable $sender): void
-    {
-        $this->sender = $sender;
-    }
+        if (!in_array($this->messageType, $this->receiver->allowedReceiveMessageTypes())) {
+            throw new InvalidReceiverException('Cannot send this kind of message!');
+        }
 
-    /**
-     * @param User $receiver
-     */
-    public function setReceiver(User $receiver): void
-    {
-        $this->receiver = $receiver;
+        return true;
     }
 }

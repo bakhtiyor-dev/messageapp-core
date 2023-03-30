@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Entities;
 
-use App\Exceptions\InvalidArgumentException;
+use App\Exceptions\ValidationException;
 use Core\Model;
 use Core\Validator;
 
@@ -61,15 +61,16 @@ abstract class User extends Model
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @throws ValidationException
      */
-    public function save()
+    public function save(): bool
     {
         $validator = new Validator();
-
+        $validator->validateRequired($this->firstName);
+        $validator->validateRequired($this->lastName);
         $validator->validateEmail($this->email);
         $validator->validateFileExtension($this->avatar, 'jpg');
 
-        echo "user saved successfully!";
+        return true;
     }
 }

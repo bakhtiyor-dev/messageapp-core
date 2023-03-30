@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Models;
+namespace App\Entities;
 
+use App\Contracts\Receivable;
 use App\Contracts\Sendable;
 use App\Enums\MessageType;
 
-class ParentGuardian extends User implements Sendable
+//Parent is reserved keyword
+class ParentGuardian extends User implements Sendable, Receivable
 {
     protected ?string $salutation;
 
@@ -24,7 +26,12 @@ class ParentGuardian extends User implements Sendable
         return [Teacher::class];
     }
 
-    public function allowedMessageTypes(): array
+    public function allowedSendMessageTypes(): array
+    {
+        return [MessageType::MANUAL];
+    }
+
+    public function allowedReceiveMessageTypes(): array
     {
         return [MessageType::MANUAL];
     }

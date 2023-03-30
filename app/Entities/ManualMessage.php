@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Models;
+namespace App\Entities;
 
 use App\Enums\MessageType;
 
 class ManualMessage extends Message
 {
-    public function __construct()
+    public function __construct(string $message)
     {
+        $this->message = $message;
         $this->messageType = MessageType::MANUAL;
     }
 }
