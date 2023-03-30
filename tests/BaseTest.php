@@ -2,17 +2,19 @@
 
 namespace tests;
 
+use App\Models\ManualMessage;
 use App\Models\Student;
 use PHPUnit\Framework\TestCase;
 
 class BaseTest extends TestCase
 {
-    public function testGreetsWithName(): void
+
+    public function testParentCanSendMessageOnlyToTeacher(): void
     {
-        $greeter = new Student();
+        $message = new ManualMessage();
+        $message->setMessage('new message');
+        $message->setSender(new Student());
 
-        $greeting = $greeter->getFullName();
-
-        $this->assertSame('Hello, Alice!', $greeting);
+        $this->expectException();
     }
 }
