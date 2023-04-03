@@ -18,7 +18,7 @@ class ParentGuardian extends User implements Sendable, Receivable
 
     public function getFullName(): string
     {
-        return "{$this->salutaion} {$this->firstName} {$this->lastName}";
+        return "{$this->salutation} {$this->firstName} {$this->lastName}";
     }
 
     public function allowedReceiverTypes(): array
